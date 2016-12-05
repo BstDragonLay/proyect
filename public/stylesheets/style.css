@@ -1,8 +1,16 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
-
-a {
-  color: #00B7FF;
+.middle{
+  margin-top: 100px;
+}
+.space{
+  padding: 5px;
+}
+.link{
+  display: inline-block;
+}
+.link input{
+  background-color: transparent;
+  border: none;
+  color: red;
 }

@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
 //middlewares
 var session_middleware = require('./middlewares/session');
 //db - models
@@ -12,7 +13,7 @@ var Register = require('./models/users').Register;
 //engine views
 var hbs = require('express-handlebars')
 //session
-var session = require('express-session');
+var cookieSession = require('cookie-session');
 //routes
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -38,11 +39,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+//methodOverride middlewares
+app.use(methodOverride("_method"));
 //session
-app.use(session({
-  secret: "afa4sf64asd6fd6as5df4",
-  resave: false,
-  saveUninitialized: false
+app.use(cookieSession({
+  name: "session",
+  keys: ["llave-1", "llave-2"]
 }));
 //routes
 app.use('/', index);
