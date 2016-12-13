@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
+//express for image in formidable
+var formidable = require('express-formidable');
 //middlewares
 var session_middleware = require('./middlewares/session');
 //db - models
@@ -46,6 +48,8 @@ app.use(cookieSession({
   name: "session",
   keys: ["llave-1", "llave-2"]
 }));
+//formidable
+app.use( formidable.parse({ keepExtensions: true }));
 //routes
 app.use('/', index);
 app.use('/users', users);
