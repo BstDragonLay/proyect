@@ -9,21 +9,38 @@ var methodOverride = require('method-override');
 var formidable = require('express-formidable');
 //middlewares
 var session_middleware = require('./middlewares/session');
+//jquery
+var jquery = require('jquery');
 //db - models
 var mongoose = require('mongoose');
 var Register = require('./models/users').Register;
 //engine views
 var hbs = require('express-handlebars')
 //session
-var cookieSession = require('cookie-session');
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+var realtime = require('./realtime');
 //routes
 var index = require('./routes/index');
 var users = require('./routes/users');
 var router_app = require('./routes/router_app');
+//servidor http / Socket Server comunication
+var http = require('http');
+var io = require('socket.io').listen(server);
 
 var app = express();
 
+var server = http.createServer(app);
 
+
+//redis
+var sessionMiddleware = session({
+  store: new RedisStore({}),
+  secret: "Hola ladron",
+  saveUninitialized: false,
+  resave: false
+});
+realtime(server, sessionMiddleware);
 // Engine of Handlebars
 app.engine('hbs', hbs({
   extname:'hbs',
@@ -44,10 +61,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //methodOverride middlewares
 app.use(methodOverride("_method"));
 //session
-app.use(cookieSession({
-  name: "session",
-  keys: ["llave-1", "llave-2"]
-}));
+app.use(sessionMiddleware);
 //formidable
 app.use( formidable.parse({ keepExtensions: true }));
 //routes
@@ -73,5 +87,4 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
 module.exports = app;

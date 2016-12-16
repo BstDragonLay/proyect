@@ -2,6 +2,9 @@ var express = require('express');
 var Imagen = require('../models/imagenes');
 var router = express.Router();
 var fs = require("fs");
+var redis = require('redis');
+//cliente de redis
+var client = redis.createClient();
 //middleware to refactor find imagenes
 var image_finder_middleware = require('./../middlewares/find_image');
 /* GET users listing. */
@@ -74,6 +77,13 @@ router.route("/imagenes")
           var imagen = new Imagen(data);
           imagen.save(function(err){
             if(!err){
+              var imgJSON = {
+                "id": imagen._id,
+                "title": imagen.title,
+                "extension": imagen.extension
+              };
+
+              client.publish("images", JSON.stringify(imgJSON));
               fs.rename(req.body.archivo.path, "public/images/"+imagen._id+"."+ extension);
               res.redirect("/app/imagenes/" + imagen._id);
             }else{
