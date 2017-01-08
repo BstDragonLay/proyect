@@ -31,7 +31,7 @@ var io = require('socket.io').listen(server);
 var app = express();
 
 var server = http.createServer(app);
-
+mongoose.connect('mongodb://localhost/test');
 
 //redis
 var sessionMiddleware = session({
